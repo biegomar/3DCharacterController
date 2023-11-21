@@ -23,6 +23,8 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        bool hitObject = Physics.Raycast(transform.position + Vector3.up, Vector3.down, 1.1f);
+
         input.z = Input.GetAxis("Vertical");
         input.x = Input.GetAxis("Horizontal");
 
@@ -32,7 +34,7 @@ public class PlayerMovement : MonoBehaviour
 
         input.y = rb.velocity.y;
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (hitObject && Input.GetKeyDown(KeyCode.Space))
         {
             input.y = jumpForce;
         }
