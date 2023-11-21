@@ -11,6 +11,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private float speed = 5f;
 
+    [SerializeField]
+    private float jumpForce = 6f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -24,9 +27,17 @@ public class PlayerMovement : MonoBehaviour
         input.x = Input.GetAxis("Horizontal");
 
         input = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0) * input;
-        Camera.main.transform.localRotation = Quaternion.identity;
 
-        rb.velocity = input * speed;
+        input *= speed;
+
+        input.y = rb.velocity.y;
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            input.y = jumpForce;
+        }
+     
+        rb.velocity = input;
         
     }
 }
