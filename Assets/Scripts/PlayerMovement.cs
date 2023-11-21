@@ -39,7 +39,7 @@ public class PlayerMovement : MonoBehaviour
 
         input.y = rb.velocity.y;
 
-        if (isGrounded && Input.GetKeyDown(KeyCode.Space))
+        if (isGrounded && Input.GetButton("Jump"))
         {
             input.y = jumpForce;
         }
