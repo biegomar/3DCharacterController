@@ -23,7 +23,12 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        bool hitObject = Physics.Raycast(transform.position + Vector3.up, Vector3.down, 1.1f);
+        HandleMovement();                     
+    }
+
+    private void HandleMovement()
+    {
+        bool isGrounded = GroundCheck();
 
         input.z = Input.GetAxis("Vertical");
         input.x = Input.GetAxis("Horizontal");
@@ -34,12 +39,22 @@ public class PlayerMovement : MonoBehaviour
 
         input.y = rb.velocity.y;
 
-        if (hitObject && Input.GetKeyDown(KeyCode.Space))
+        if (isGrounded && Input.GetKeyDown(KeyCode.Space))
         {
             input.y = jumpForce;
         }
-     
+
         rb.velocity = input;
-        
+    }
+
+    private bool GroundCheck()
+    {
+        bool hitObject = Physics.Raycast(transform.position + Vector3.up, Vector3.down, 1.1f);
+
+        Color debugColor = hitObject ? Color.green : Color.red;
+
+        Debug.DrawRay(transform.position + Vector3.up, Vector3.down * 1.1f, debugColor, 0.01f, true);
+
+        return hitObject;
     }
 }
