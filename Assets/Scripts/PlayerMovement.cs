@@ -12,8 +12,6 @@ public class PlayerMovement : MonoBehaviour
 
     Rigidbody rb;
 
-    Vector3 input;
-
     [SerializeField]
     private float speed = 5f;
 
@@ -52,47 +50,25 @@ public class PlayerMovement : MonoBehaviour
     {
         HandleMovementWithNewInputSystem();                     
     }
-
-    private void HandleMovement()
-    {
-        bool isGrounded = GroundCheck();
-
-        input.z = Input.GetAxis("Vertical");
-        input.x = Input.GetAxis("Horizontal");
-
-        input = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0) * input;
-
-        input *= speed;
-
-        input.y = rb.velocity.y;
-
-        if (isGrounded && Input.GetButton("Jump"))
-        {
-            input.y = jumpForce;
-        }
-
-        rb.velocity = input;
-    }
-
+   
     private void HandleMovementWithNewInputSystem()
     {
         bool isGrounded = GroundCheck();
 
+        Vector3 input;
+
         input.z = move.ReadValue<Vector2>().y;
         input.x = move.ReadValue<Vector2>().x;
+        input.y = 0;
 
-        input = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0) * input;
+        Vector3 inputRelativeToCamera = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0) * input;
+        Vector3 velocity = inputRelativeToCamera * speed;  
+        
+        Vector3 smoothVelocity = Vector3.Lerp(rb.velocity, velocity, 25 * Time.deltaTime);
 
-        input *= speed;
+        velocity.y = (isGrounded && jump.triggered) ? jumpForce : rb.velocity.y;        
 
-        input.y = rb.velocity.y;
-
-        if (isGrounded && jump.triggered)
-        {
-            input.y = jumpForce;
-        }
-
-        rb.velocity = input;
+        rb.velocity = new Vector3(smoothVelocity.x, velocity.y, smoothVelocity.z);
     }
 
     private bool GroundCheck()
