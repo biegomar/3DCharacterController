@@ -16,10 +16,11 @@ public class PlayerInteraction : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        RaycastHit hit;
+        RaycastHit hit; //hits treffen übrigens immer einen Collider
         if (Physics.Raycast(cameraRoot.position, cameraRoot.forward, out hit, 4))
         {
-            if (Mouse.current.leftButton.wasPressedThisFrame)
+
+            if (Mouse.current.leftButton.wasPressedThisFrame && hit.transform.GetComponent<LightSwitch>() != null)
             {
                 hit.transform.GetComponent<LightSwitch>().PressLightSwitch();
             }
